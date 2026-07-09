@@ -1,0 +1,1036 @@
+<html lang="zh-CN"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>考研英语一真题正确率统计</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="英语一统计">
+    <link rel="apple-touch-icon" href="icon-512.jpg">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', 'PingFang SC', sans-serif;
+            background: #f1f5f9;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            padding: 30px;
+            margin-bottom: 25px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #1e293b;
+            margin-bottom: 10px;
+            font-size: 26px;
+            font-weight: 600;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #64748b;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #2563eb;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .subsection-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #334155;
+            margin: 20px 0 12px 0;
+            padding-left: 10px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 10px 24px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: #fff;
+            color: #475569;
+        }
+
+        .tab-btn:hover {
+            border-color: #2563eb;
+            color: #2563eb;
+        }
+
+        .tab-btn.active {
+            background: #2563eb;
+            border-color: #2563eb;
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .year-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .year-selector label {
+            font-weight: 500;
+            color: #334155;
+        }
+
+        .year-selector select {
+            padding: 8px 16px;
+            border: 2px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            background: #fff;
+        }
+
+        .year-selector select:focus {
+            outline: none;
+            border-color: #2563eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            border: 1px solid #e2e8f0;
+            padding: 10px 12px;
+            text-align: center;
+        }
+
+        th {
+            background: #2563eb;
+            color: white;
+            font-weight: 500;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+
+        tr:hover {
+            background-color: #eff6ff;
+        }
+
+        .reading-sub-row {
+            background-color: #f0f7ff !important;
+        }
+
+        .reading-sub-row td:first-child {
+            padding-left: 30px;
+            font-size: 14px;
+            color: #475569;
+        }
+
+        .type-name {
+            font-weight: 600;
+            color: #1e293b;
+            text-align: left;
+        }
+
+        .score-input {
+            width: 60px;
+            padding: 6px 8px;
+            border: 2px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 15px;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+
+        .score-input:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+        }
+
+        .accuracy {
+            font-weight: 700;
+            font-size: 15px;
+        }
+
+        .accuracy-high {
+            color: #16a34a;
+        }
+
+        .accuracy-medium {
+            color: #d97706;
+        }
+
+        .accuracy-low {
+            color: #dc2626;
+        }
+
+        .total-row {
+            background: #1e40af !important;
+            color: white;
+            font-weight: 600;
+        }
+
+        .subtotal-row {
+            background: #dbeafe !important;
+            font-weight: 600;
+        }
+
+        .total-score {
+            font-size: 20px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-reset {
+            background-color: #f1f5f9;
+            color: #475569;
+            border: 1px solid #cbd5e1;
+        }
+
+        .btn-reset:hover {
+            background-color: #e2e8f0;
+        }
+
+        .btn-save {
+            background: #2563eb;
+            color: white;
+        }
+
+        .btn-save:hover {
+            background: #1d4ed8;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-delete {
+            background-color: #dc2626;
+            color: white;
+            padding: 6px 12px;
+            font-size: 13px;
+        }
+
+        .btn-delete:hover {
+            background-color: #b91c1c;
+        }
+
+        .data-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn-export {
+            background: #0891b2;
+            color: white;
+            padding: 8px 20px;
+            font-size: 14px;
+        }
+
+        .btn-export:hover {
+            background: #0e7490;
+        }
+
+        .btn-import {
+            background: #6366f1;
+            color: white;
+            padding: 8px 20px;
+            font-size: 14px;
+        }
+
+        .btn-import:hover {
+            background: #4f46e5;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 450px;
+            margin-top: 20px;
+        }
+
+        .legend-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 15px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+        }
+
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 3px;
+        }
+
+        .history-table {
+            font-size: 14px;
+        }
+
+        .history-table th {
+            font-size: 13px;
+            padding: 10px;
+        }
+
+        .history-table td {
+            padding: 10px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #94a3b8;
+        }
+
+        .empty-state svg {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        .note {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            color: #475569;
+            line-height: 1.6;
+        }
+
+        .note strong {
+            color: #2563eb;
+        }
+
+        @media (max-width: 768px) {
+            .card {
+                padding: 20px;
+            }
+
+            th, td {
+                padding: 6px 4px;
+                font-size: 12px;
+            }
+
+            .score-input {
+                width: 45px;
+                padding: 5px;
+                font-size: 13px;
+            }
+
+            .chart-container {
+                height: 350px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h1>考研英语一真题正确率统计</h1>
+            <p class="subtitle">2002 - 2026年真题 · 阅读Text1-4细分 · 全面追踪</p>
+
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('input')">录入成绩</button>
+                <button class="tab-btn" onclick="switchTab('trend')">趋势分析</button>
+                <button class="tab-btn" onclick="switchTab('history')">历史记录</button>
+            </div>
+
+            <!-- 录入成绩标签页 -->
+            <div id="input-tab" class="tab-content active">
+                <div class="note">
+                    <strong>题型说明：</strong><br>
+                    • 完形填空：20题，每题0.5分，满分10分<br>
+                    • 阅读理解A：Text1-4各5题，每题2分，共20题40分<br>
+                    • 新题型（阅读B）：5题，每题2分，满分10分<br>
+                    • 翻译：5题，每题2分，满分10分<br>
+                    • 作文：小作文10分 + 大作文20分，满分30分
+                </div>
+
+                <div class="year-selector">
+                    <label>选择年份：</label>
+                    <select id="yearSelect" onchange="loadYearData()">
+                    </select>
+                </div>
+
+                <div class="section-title">各题型正确率</div>
+
+                <!-- 完形填空 -->
+                <div class="subsection-title">完形填空</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="text-align: left;">题型</th>
+                            <th>题目数</th>
+                            <th>满分</th>
+                            <th>正确数</th>
+                            <th>得分</th>
+                            <th>正确率</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="type-name">完形填空</td>
+                            <td>20</td>
+                            <td>10</td>
+                            <td><input type="number" class="score-input" id="wanxing_correct" min="0" max="20" value="0" oninput="calculate()"></td>
+                            <td id="wanxing_score">0</td>
+                            <td class="accuracy" id="wanxing_accuracy">0%</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- 阅读理解A（细分Text1-4） -->
+                <div class="subsection-title">阅读理解A（Text 1-4）</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="text-align: left;">阅读篇目</th>
+                            <th>题目数</th>
+                            <th>满分</th>
+                            <th>正确数</th>
+                            <th>得分</th>
+                            <th>正确率</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="reading-sub-row">
+                            <td class="type-name">Text 1</td>
+                            <td>5</td>
+                            <td>10</td>
+                            <td><input type="number" class="score-input" id="yuedu_text1" min="0" max="5" value="0" oninput="calculate()"></td>
+                            <td id="yuedu_text1_score">0</td>
+                            <td class="accuracy" id="yuedu_text1_accuracy">0%</td>
+                        </tr>
+                        <tr class="reading-sub-row">
+                            <td class="type-name">Text 2</td>
+                            <td>5</td>
+                            <td>10</td>
+                            <td><input type="number" class="score-input" id="yuedu_text2" min="0" max="5" value="0" oninput="calculate()"></td>
+                            <td id="yuedu_text2_score">0</td>
+                            <td class="accuracy" id="yuedu_text2_accuracy">0%</td>
+                        </tr>
+                        <tr class="reading-sub-row">
+                            <td class="type-name">Text 3</td>
+                            <td>5</td>
+                            <td>10</td>
+                            <td><input type="number" class="score-input" id="yuedu_text3" min="0" max="5" value="0" oninput="calculate()"></td>
+                            <td id="yuedu_text3_score">0</td>
+                            <td class="accuracy" id="yuedu_text3_accuracy">0%</td>
+                        </tr>
+                        <tr class="reading-sub-row">
+                            <td class="type-name">Text 4</td>
+                            <td>5</td>
+                            <td>10</td>
+                            <td><input type="number" class="score-input" id="yuedu_text4" min="0" max="5" value="0" oninput="calculate()"></td>
+                            <td id="yuedu_text4_score">0</td>
+                            <td class="accuracy" id="yuedu_text4_accuracy">0%</td>
+                        </tr>
+                        <tr class="subtotal-row">
+                            <td class="type-name">阅读A 小计</td>
+                            <td>20</td>
+                            <td>40</td>
+                            <td id="yuedu_total_correct">0</td>
+                            <td id="yuedu_total_score">0</td>
+                            <td class="accuracy" id="yuedu_total_accuracy">0%</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- 其他题型 -->
+                <div class="subsection-title">其他题型</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="text-align: left;">题型</th>
+                            <th>题目数</th>
+                            <th>满分</th>
+                            <th>正确数</th>
+                            <th>得分</th>
+                            <th>正确率</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="type-name">新题型（阅读B）</td>
+                            <td>5</td>
+                            <td>10</td>
+                            <td><input type="number" class="score-input" id="xinti_correct" min="0" max="5" value="0" oninput="calculate()"></td>
+                            <td id="xinti_score">0</td>
+                            <td class="accuracy" id="xinti_accuracy">0%</td>
+                        </tr>
+                        <tr>
+                            <td class="type-name">翻译</td>
+                            <td>5</td>
+                            <td>10</td>
+                            <td><input type="number" class="score-input" id="fanyi_correct" min="0" max="5" value="0" oninput="calculate()"></td>
+                            <td id="fanyi_score">0</td>
+                            <td class="accuracy" id="fanyi_accuracy">0%</td>
+                        </tr>
+                        <tr>
+                            <td class="type-name">作文（直接填分）</td>
+                            <td>-</td>
+                            <td>30</td>
+                            <td>-</td>
+                            <td><input type="number" class="score-input" id="zuowen_score" min="0" max="30" value="0" oninput="calculate()"></td>
+                            <td class="accuracy" id="zuowen_accuracy">0%</td>
+                        </tr>
+                        <tr class="total-row">
+                            <td colspan="3">全卷总计</td>
+                            <td id="total_correct">0</td>
+                            <td class="total-score" id="total_score">0</td>
+                            <td class="accuracy" id="total_accuracy" style="color: #ffffff;">0%</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="btn-group">
+                    <button class="btn-reset" onclick="resetForm()">清空</button>
+                    <button class="btn-save" onclick="saveData()">保存记录</button>
+                </div>
+            </div>
+
+            <!-- 趋势图表标签页 -->
+            <div id="trend-tab" class="tab-content">
+                <div class="section-title">历年正确率趋势</div>
+                <div id="chart-empty" class="empty-state">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 3v18h18"></path>
+                        <path d="M18 17l-5-5-4 4-4-4"></path>
+                    </svg>
+                    <p>暂无数据，保存记录后即可查看趋势图表</p>
+                </div>
+                <div class="chart-container" id="chart-container" style="display: none;">
+                    <canvas id="trendChart"></canvas>
+                </div>
+                <div class="legend-container" id="legend-container" style="display: none;">
+                    <div class="legend-item">
+                        <span class="legend-color" style="background: #2563eb;"></span>
+                        <span>完形</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color" style="background: #0891b2;"></span>
+                        <span>阅读</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color" style="background: #0d9488;"></span>
+                        <span>新题型</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color" style="background: #6366f1;"></span>
+                        <span>翻译</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color" style="background: #8b5cf6;"></span>
+                        <span>作文</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color" style="background: #1e293b; border: 2px solid #1e293b;"></span>
+                        <span>总分</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 历史记录标签页 -->
+            <div id="history-tab" class="tab-content">
+                <div class="section-title">历史成绩记录</div>
+                <div class="data-actions">
+                    <button class="btn-export" onclick="exportData()">导出记录</button>
+                    <button class="btn-import" onclick="document.getElementById('importFile').click()">导入记录</button>
+                    <input type="file" id="importFile" accept=".json,application/json" style="display: none;" onchange="importData(event)">
+                </div>
+                <div id="history-empty" class="empty-state">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                    </svg>
+                    <p>暂无历史记录</p>
+                </div>
+                <div id="history-content"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const types = ['wanxing', 'yuedu', 'xinti', 'fanyi', 'zuowen'];
+        const typeNames = ['完形', '阅读', '新题型', '翻译', '作文'];
+        const colors = ['#2563eb', '#0891b2', '#0d9488', '#6366f1', '#8b5cf6'];
+        let trendChart = null;
+
+        // 初始化年份选择器（2002-2026）
+        function initYearSelect() {
+            const select = document.getElementById('yearSelect');
+            for (let year = 2026; year >= 2002; year--) {
+                const option = document.createElement('option');
+                option.value = year;
+                option.textContent = year + '年';
+                select.appendChild(option);
+            }
+        }
+
+        // 切换标签页
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+            event.target.classList.add('active');
+            document.getElementById(tabName + '-tab').classList.add('active');
+
+            if (tabName === 'trend') {
+                renderChart();
+            } else if (tabName === 'history') {
+                renderHistory();
+            }
+        }
+
+        // 获取正确率样式
+        function getAccuracyClass(accuracy) {
+            if (accuracy >= 70) return 'accuracy-high';
+            if (accuracy >= 50) return 'accuracy-medium';
+            return 'accuracy-low';
+        }
+
+        // 计算得分和正确率
+        function calculate() {
+            // ========== 完形：20题，每题0.5分 ==========
+            const wanxingCorrect = parseInt(document.getElementById('wanxing_correct').value) || 0;
+            const wanxingScore = wanxingCorrect * 0.5;
+            const wanxingAccuracy = (wanxingCorrect / 20) * 100;
+
+            document.getElementById('wanxing_score').textContent = wanxingScore.toFixed(1);
+            document.getElementById('wanxing_accuracy').textContent = wanxingAccuracy.toFixed(1) + '%';
+            document.getElementById('wanxing_accuracy').className = 'accuracy ' + getAccuracyClass(wanxingAccuracy);
+
+            // ========== 阅读A：Text1-4，每篇5题，每题2分 ==========
+            const text1 = parseInt(document.getElementById('yuedu_text1').value) || 0;
+            const text2 = parseInt(document.getElementById('yuedu_text2').value) || 0;
+            const text3 = parseInt(document.getElementById('yuedu_text3').value) || 0;
+            const text4 = parseInt(document.getElementById('yuedu_text4').value) || 0;
+
+            // Text 1
+            document.getElementById('yuedu_text1_score').textContent = (text1 * 2);
+            document.getElementById('yuedu_text1_accuracy').textContent = ((text1 / 5) * 100).toFixed(1) + '%';
+            document.getElementById('yuedu_text1_accuracy').className = 'accuracy ' + getAccuracyClass((text1 / 5) * 100);
+
+            // Text 2
+            document.getElementById('yuedu_text2_score').textContent = (text2 * 2);
+            document.getElementById('yuedu_text2_accuracy').textContent = ((text2 / 5) * 100).toFixed(1) + '%';
+            document.getElementById('yuedu_text2_accuracy').className = 'accuracy ' + getAccuracyClass((text2 / 5) * 100);
+
+            // Text 3
+            document.getElementById('yuedu_text3_score').textContent = (text3 * 2);
+            document.getElementById('yuedu_text3_accuracy').textContent = ((text3 / 5) * 100).toFixed(1) + '%';
+            document.getElementById('yuedu_text3_accuracy').className = 'accuracy ' + getAccuracyClass((text3 / 5) * 100);
+
+            // Text 4
+            document.getElementById('yuedu_text4_score').textContent = (text4 * 2);
+            document.getElementById('yuedu_text4_accuracy').textContent = ((text4 / 5) * 100).toFixed(1) + '%';
+            document.getElementById('yuedu_text4_accuracy').className = 'accuracy ' + getAccuracyClass((text4 / 5) * 100);
+
+            // 阅读小计
+            const yueduCorrect = text1 + text2 + text3 + text4;
+            const yueduScore = yueduCorrect * 2;
+            const yueduAccuracy = (yueduCorrect / 20) * 100;
+
+            document.getElementById('yuedu_total_correct').textContent = yueduCorrect;
+            document.getElementById('yuedu_total_score').textContent = yueduScore;
+            document.getElementById('yuedu_total_accuracy').textContent = yueduAccuracy.toFixed(1) + '%';
+            document.getElementById('yuedu_total_accuracy').className = 'accuracy ' + getAccuracyClass(yueduAccuracy);
+
+            // ========== 新题型：5题，每题2分 ==========
+            const xintiCorrect = parseInt(document.getElementById('xinti_correct').value) || 0;
+            const xintiScore = xintiCorrect * 2;
+            const xintiAccuracy = (xintiCorrect / 5) * 100;
+
+            document.getElementById('xinti_score').textContent = xintiScore;
+            document.getElementById('xinti_accuracy').textContent = xintiAccuracy.toFixed(1) + '%';
+            document.getElementById('xinti_accuracy').className = 'accuracy ' + getAccuracyClass(xintiAccuracy);
+
+            // ========== 翻译：5题，每题2分 ==========
+            const fanyiCorrect = parseInt(document.getElementById('fanyi_correct').value) || 0;
+            const fanyiScore = fanyiCorrect * 2;
+            const fanyiAccuracy = (fanyiCorrect / 5) * 100;
+
+            document.getElementById('fanyi_score').textContent = fanyiScore;
+            document.getElementById('fanyi_accuracy').textContent = fanyiAccuracy.toFixed(1) + '%';
+            document.getElementById('fanyi_accuracy').className = 'accuracy ' + getAccuracyClass(fanyiAccuracy);
+
+            // ========== 作文：直接填分，满分30 ==========
+            const zuowenScore = parseInt(document.getElementById('zuowen_score').value) || 0;
+            const zuowenAccuracy = (zuowenScore / 30) * 100;
+
+            document.getElementById('zuowen_accuracy').textContent = zuowenAccuracy.toFixed(1) + '%';
+            document.getElementById('zuowen_accuracy').className = 'accuracy ' + getAccuracyClass(zuowenAccuracy);
+
+            // ========== 全卷总计 ==========
+            const totalCorrect = wanxingCorrect + yueduCorrect + xintiCorrect + fanyiCorrect;
+            const totalScore = wanxingScore + yueduScore + xintiScore + fanyiScore + zuowenScore;
+            const totalAccuracy = (totalScore / 100) * 100;
+
+            document.getElementById('total_correct').textContent = totalCorrect;
+            document.getElementById('total_score').textContent = totalScore.toFixed(1);
+            document.getElementById('total_accuracy').textContent = totalAccuracy.toFixed(1) + '%';
+        }
+
+        // 重置表单
+        function resetForm() {
+            if (confirm('确定要清空当前输入吗？')) {
+                document.querySelectorAll('.score-input').forEach(input => {
+                    input.value = 0;
+                });
+                calculate();
+            }
+        }
+
+        // 加载年份数据
+        function loadYearData() {
+            const year = document.getElementById('yearSelect').value;
+            const history = JSON.parse(localStorage.getItem('englishScores') || '{}');
+
+            if (history[year]) {
+                const data = history[year];
+                document.getElementById('wanxing_correct').value = data.wanxing_correct || 0;
+                document.getElementById('yuedu_text1').value = data.yuedu_text1 || 0;
+                document.getElementById('yuedu_text2').value = data.yuedu_text2 || 0;
+                document.getElementById('yuedu_text3').value = data.yuedu_text3 || 0;
+                document.getElementById('yuedu_text4').value = data.yuedu_text4 || 0;
+                document.getElementById('xinti_correct').value = data.xinti_correct || 0;
+                document.getElementById('fanyi_correct').value = data.fanyi_correct || 0;
+                document.getElementById('zuowen_score').value = data.zuowen_score || 0;
+            } else {
+                document.querySelectorAll('.score-input').forEach(input => {
+                    input.value = 0;
+                });
+            }
+            calculate();
+        }
+
+        // 保存数据
+        function saveData() {
+            const year = document.getElementById('yearSelect').value;
+            const history = JSON.parse(localStorage.getItem('englishScores') || '{}');
+
+            const data = {
+                id: Date.now(),
+                year: year,
+                wanxing_correct: parseInt(document.getElementById('wanxing_correct').value) || 0,
+                yuedu_text1: parseInt(document.getElementById('yuedu_text1').value) || 0,
+                yuedu_text2: parseInt(document.getElementById('yuedu_text2').value) || 0,
+                yuedu_text3: parseInt(document.getElementById('yuedu_text3').value) || 0,
+                yuedu_text4: parseInt(document.getElementById('yuedu_text4').value) || 0,
+                xinti_correct: parseInt(document.getElementById('xinti_correct').value) || 0,
+                fanyi_correct: parseInt(document.getElementById('fanyi_correct').value) || 0,
+                zuowen_score: parseInt(document.getElementById('zuowen_score').value) || 0,
+                updatedAt: new Date().toISOString()
+            };
+
+            // 计算各题型得分和正确率
+            data.wanxing_score = data.wanxing_correct * 0.5;
+            data.wanxing_accuracy = (data.wanxing_correct / 20) * 100;
+
+            data.yuedu_correct = data.yuedu_text1 + data.yuedu_text2 + data.yuedu_text3 + data.yuedu_text4;
+            data.yuedu_score = data.yuedu_correct * 2;
+            data.yuedu_accuracy = (data.yuedu_correct / 20) * 100;
+
+            data.xinti_score = data.xinti_correct * 2;
+            data.xinti_accuracy = (data.xinti_correct / 5) * 100;
+
+            data.fanyi_score = data.fanyi_correct * 2;
+            data.fanyi_accuracy = (data.fanyi_correct / 5) * 100;
+
+            data.zuowen_accuracy = (data.zuowen_score / 30) * 100;
+
+            data.total_score = data.wanxing_score + data.yuedu_score + data.xinti_score + data.fanyi_score + data.zuowen_score;
+            data.total_accuracy = (data.total_score / 100) * 100;
+
+            if (history[year]) {
+                if (confirm(year + '年已有记录，是否覆盖？')) {
+                    history[year] = data;
+                } else {
+                    return;
+                }
+            } else {
+                history[year] = data;
+            }
+
+            localStorage.setItem('englishScores', JSON.stringify(history));
+            alert(year + '年记录已保存成功！');
+        }
+
+        // 删除记录
+        function deleteRecord(year) {
+            if (confirm('确定要删除' + year + '年的记录吗？')) {
+                const history = JSON.parse(localStorage.getItem('englishScores') || '{}');
+                delete history[year];
+                localStorage.setItem('englishScores', JSON.stringify(history));
+                renderHistory();
+                renderChart();
+                alert(year + '年记录已删除！');
+            }
+        }
+
+        // 导出记录
+        function exportData() {
+            const history = localStorage.getItem('englishScores') || '{}';
+            if (history === '{}') {
+                alert('暂无记录可导出');
+                return;
+            }
+            const blob = new Blob([history], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = '考研英语一成绩记录_' + new Date().toISOString().slice(0, 10) + '.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // 导入记录
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if (typeof data !== 'object' || data === null) {
+                        throw new Error('Invalid format');
+                    }
+                    const existing = JSON.parse(localStorage.getItem('englishScores') || '{}');
+                    const merged = Object.assign({}, existing, data);
+                    localStorage.setItem('englishScores', JSON.stringify(merged));
+                    const importedCount = Object.keys(data).length;
+                    alert('导入成功！共导入 ' + importedCount + ' 条记录');
+                    loadYearData();
+                    renderHistory();
+                    renderChart();
+                } catch (err) {
+                    alert('导入失败：文件格式不正确');
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = '';
+        }
+
+        // 渲染趋势图表
+        function renderChart() {
+            const history = JSON.parse(localStorage.getItem('englishScores') || '{}');
+            const years = Object.keys(history).sort();
+
+            if (years.length === 0) {
+                document.getElementById('chart-empty').style.display = 'block';
+                document.getElementById('chart-container').style.display = 'none';
+                document.getElementById('legend-container').style.display = 'none';
+                return;
+            }
+
+            document.getElementById('chart-empty').style.display = 'none';
+            document.getElementById('chart-container').style.display = 'block';
+            document.getElementById('legend-container').style.display = 'flex';
+
+            const labels = years.map(y => y + '年');
+
+            const datasets = types.map((type, index) => ({
+                label: typeNames[index],
+                data: years.map(year => history[year][type + '_accuracy']),
+                borderColor: colors[index],
+                backgroundColor: colors[index] + '20',
+                tension: 0.4,
+                fill: false,
+                pointRadius: 4,
+                pointHoverRadius: 6
+            }));
+
+            // 添加总分正确率
+            datasets.push({
+                label: '总分',
+                data: years.map(year => history[year].total_accuracy),
+                borderColor: '#1e293b',
+                backgroundColor: 'rgba(30,41,59,0.1)',
+                tension: 0.4,
+                fill: false,
+                borderWidth: 3,
+                pointRadius: 5,
+                pointHoverRadius: 7
+            });
+
+            if (trendChart) {
+                trendChart.destroy();
+            }
+
+            const ctx = document.getElementById('trendChart').getContext('2d');
+            trendChart = new Chart(ctx, {
+                type: 'line',
+                data: { labels, datasets },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': ' + context.parsed.y.toFixed(1) + '%';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            min: 0,
+                            max: 100,
+                            ticks: {
+                                stepSize: 10,
+                                callback: value => value + '%'
+                            },
+                            grid: {
+                                color: 'rgba(0,0,0,0.05)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    },
+                    interaction: {
+                        mode: 'nearest',
+                        axis: 'x',
+                        intersect: false
+                    }
+                }
+            });
+        }
+
+        // 渲染历史记录
+        function renderHistory() {
+            const history = JSON.parse(localStorage.getItem('englishScores') || '{}');
+            const years = Object.keys(history).sort().reverse();
+
+            if (years.length === 0) {
+                document.getElementById('history-empty').style.display = 'block';
+                document.getElementById('history-content').innerHTML = '';
+                return;
+            }
+
+            document.getElementById('history-empty').style.display = 'none';
+
+            let html = '<table class="history-table"><thead><tr><th>年份</th><th>完形</th><th>阅读</th><th>新题型</th><th>翻译</th><th>作文</th><th>总分</th><th>操作</th></tr></thead><tbody>';
+
+            years.forEach(year => {
+                const data = history[year];
+                html += `<tr>
+                    <td><strong>${year}年</strong></td>
+                    <td class="accuracy ${getAccuracyClass(data.wanxing_accuracy)}">${data.wanxing_accuracy.toFixed(1)}%</td>
+                    <td class="accuracy ${getAccuracyClass(data.yuedu_accuracy)}">${data.yuedu_accuracy.toFixed(1)}%</td>
+                    <td class="accuracy ${getAccuracyClass(data.xinti_accuracy)}">${data.xinti_accuracy.toFixed(1)}%</td>
+                    <td class="accuracy ${getAccuracyClass(data.fanyi_accuracy)}">${data.fanyi_accuracy.toFixed(1)}%</td>
+                    <td class="accuracy ${getAccuracyClass(data.zuowen_accuracy)}">${data.zuowen_accuracy.toFixed(1)}%</td>
+                    <td><strong>${data.total_score.toFixed(1)}</strong></td>
+                    <td><button class="btn-delete" onclick="deleteRecord('${year}')">删除</button></td>
+                </tr>`;
+            });
+
+            html += '</tbody></table>';
+            document.getElementById('history-content').innerHTML = html;
+        }
+
+        // 注册 Service Worker (PWA 离线支持)
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('sw.js').then(function() {
+                    console.log('Service Worker 注册成功');
+                }).catch(function(err) {
+                    console.log('Service Worker 注册失败:', err);
+                });
+            });
+        }
+
+        // 初始化
+        initYearSelect();
+        calculate();
+    </script>
+
+</body></html>
