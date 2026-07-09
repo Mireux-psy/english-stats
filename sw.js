@@ -1,4 +1,4 @@
-const CACHE_NAME = 'english-stats-v3';
+const CACHE_NAME = 'english-stats-v4';
 const PRECACHE_URLS = [
     './',
     './statistics%20for%20English.html',
