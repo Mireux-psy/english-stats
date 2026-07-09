@@ -166,14 +166,18 @@
             margin-bottom: 20px;
             font-size: 14px;
             line-height: 1.5;
+            table-layout: fixed;
         }
 
         th, td {
             border: 1px solid #e2e8f0;
-            padding: 10px 12px;
+            padding: 10px 6px;
             text-align: center;
             font-size: 14px;
             line-height: 1.5;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         th {
@@ -181,14 +185,34 @@
             color: white;
             font-weight: 500;
             font-size: 14px;
+            white-space: nowrap;
         }
 
-        tr:nth-child(even) {
-            background-color: #f8fafc;
+        th.col-type,
+        td.col-type {
+            text-align: left;
+            white-space: normal;
+            width: 28%;
         }
 
-        tr:hover {
-            background-color: #eff6ff;
+        th.col-num,
+        td.col-num {
+            width: 14%;
+        }
+
+        th.col-correct,
+        td.col-correct {
+            width: 16%;
+        }
+
+        th.col-score,
+        td.col-score {
+            width: 14%;
+        }
+
+        th.col-rate,
+        td.col-rate {
+            width: 14%;
         }
 
         .reading-sub-row {
@@ -196,7 +220,7 @@
         }
 
         .reading-sub-row td:first-child {
-            padding-left: 30px;
+            padding-left: 16px;
             font-size: 14px;
             color: #475569;
         }
@@ -450,7 +474,7 @@
             }
 
             th, td {
-                padding: 8px 6px;
+                padding: 8px 4px;
                 font-size: 13px;
                 line-height: 1.5;
             }
@@ -459,14 +483,31 @@
                 font-size: 13px;
             }
 
+            .col-type {
+                width: 30% !important;
+            }
+
+            .col-num,
+            .col-score {
+                width: 12% !important;
+            }
+
+            .col-correct {
+                width: 20% !important;
+            }
+
+            .col-rate {
+                width: 14% !important;
+            }
+
             .score-input {
-                width: 50px;
-                padding: 6px 4px;
+                width: 44px;
+                padding: 5px 2px;
                 font-size: 14px;
             }
 
             .accuracy {
-                font-size: 14px;
+                font-size: 13px;
             }
 
             .total-score {
@@ -494,7 +535,7 @@
             }
 
             .reading-sub-row td:first-child {
-                padding-left: 20px;
+                padding-left: 12px;
                 font-size: 13px;
             }
 
@@ -514,6 +555,32 @@
 
             .legend-item {
                 font-size: 12px;
+            }
+        }
+
+        @media (max-width: 420px) {
+            .col-num {
+                display: none !important;
+            }
+
+            .col-type {
+                width: 34% !important;
+            }
+
+            .col-score {
+                width: 14% !important;
+            }
+
+            .col-correct {
+                width: 22% !important;
+            }
+
+            .col-rate {
+                width: 16% !important;
+            }
+
+            .score-input {
+                width: 40px;
             }
         }
     </style>
@@ -554,22 +621,22 @@
                 <table>
                     <thead>
                         <tr>
-                            <th style="text-align: left;">题型</th>
-                            <th>题目数</th>
-                            <th>满分</th>
-                            <th>正确数</th>
-                            <th>得分</th>
-                            <th>正确率</th>
+                            <th class="col-type">题型</th>
+                            <th class="col-num">题数</th>
+                            <th class="col-score">满分</th>
+                            <th class="col-correct">正确数</th>
+                            <th class="col-score">得分</th>
+                            <th class="col-rate">正确率</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td class="type-name">完形填空</td>
-                            <td>20</td>
-                            <td>10</td>
-                            <td><input type="number" class="score-input" id="wanxing_correct" min="0" max="20" value="0" oninput="calculate()"></td>
-                            <td id="wanxing_score">0</td>
-                            <td class="accuracy" id="wanxing_accuracy">0%</td>
+                            <td class="type-name col-type">完形填空</td>
+                            <td class="col-num">20</td>
+                            <td class="col-score">10</td>
+                            <td class="col-correct"><input type="number" class="score-input" id="wanxing_correct" min="0" max="20" value="0" oninput="calculate()"></td>
+                            <td id="wanxing_score" class="col-score">0</td>
+                            <td class="accuracy col-rate" id="wanxing_accuracy">0%</td>
                         </tr>
                     </tbody>
                 </table>
@@ -579,54 +646,54 @@
                 <table>
                     <thead>
                         <tr>
-                            <th style="text-align: left;">阅读篇目</th>
-                            <th>题目数</th>
-                            <th>满分</th>
-                            <th>正确数</th>
-                            <th>得分</th>
-                            <th>正确率</th>
+                            <th class="col-type">篇目</th>
+                            <th class="col-num">题数</th>
+                            <th class="col-score">满分</th>
+                            <th class="col-correct">正确数</th>
+                            <th class="col-score">得分</th>
+                            <th class="col-rate">正确率</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr class="reading-sub-row">
-                            <td class="type-name">Text 1</td>
-                            <td>5</td>
-                            <td>10</td>
-                            <td><input type="number" class="score-input" id="yuedu_text1" min="0" max="5" value="0" oninput="calculate()"></td>
-                            <td id="yuedu_text1_score">0</td>
-                            <td class="accuracy" id="yuedu_text1_accuracy">0%</td>
+                            <td class="type-name col-type">Text 1</td>
+                            <td class="col-num">5</td>
+                            <td class="col-score">10</td>
+                            <td class="col-correct"><input type="number" class="score-input" id="yuedu_text1" min="0" max="5" value="0" oninput="calculate()"></td>
+                            <td id="yuedu_text1_score" class="col-score">0</td>
+                            <td class="accuracy col-rate" id="yuedu_text1_accuracy">0%</td>
                         </tr>
                         <tr class="reading-sub-row">
-                            <td class="type-name">Text 2</td>
-                            <td>5</td>
-                            <td>10</td>
-                            <td><input type="number" class="score-input" id="yuedu_text2" min="0" max="5" value="0" oninput="calculate()"></td>
-                            <td id="yuedu_text2_score">0</td>
-                            <td class="accuracy" id="yuedu_text2_accuracy">0%</td>
+                            <td class="type-name col-type">Text 2</td>
+                            <td class="col-num">5</td>
+                            <td class="col-score">10</td>
+                            <td class="col-correct"><input type="number" class="score-input" id="yuedu_text2" min="0" max="5" value="0" oninput="calculate()"></td>
+                            <td id="yuedu_text2_score" class="col-score">0</td>
+                            <td class="accuracy col-rate" id="yuedu_text2_accuracy">0%</td>
                         </tr>
                         <tr class="reading-sub-row">
-                            <td class="type-name">Text 3</td>
-                            <td>5</td>
-                            <td>10</td>
-                            <td><input type="number" class="score-input" id="yuedu_text3" min="0" max="5" value="0" oninput="calculate()"></td>
-                            <td id="yuedu_text3_score">0</td>
-                            <td class="accuracy" id="yuedu_text3_accuracy">0%</td>
+                            <td class="type-name col-type">Text 3</td>
+                            <td class="col-num">5</td>
+                            <td class="col-score">10</td>
+                            <td class="col-correct"><input type="number" class="score-input" id="yuedu_text3" min="0" max="5" value="0" oninput="calculate()"></td>
+                            <td id="yuedu_text3_score" class="col-score">0</td>
+                            <td class="accuracy col-rate" id="yuedu_text3_accuracy">0%</td>
                         </tr>
                         <tr class="reading-sub-row">
-                            <td class="type-name">Text 4</td>
-                            <td>5</td>
-                            <td>10</td>
-                            <td><input type="number" class="score-input" id="yuedu_text4" min="0" max="5" value="0" oninput="calculate()"></td>
-                            <td id="yuedu_text4_score">0</td>
-                            <td class="accuracy" id="yuedu_text4_accuracy">0%</td>
+                            <td class="type-name col-type">Text 4</td>
+                            <td class="col-num">5</td>
+                            <td class="col-score">10</td>
+                            <td class="col-correct"><input type="number" class="score-input" id="yuedu_text4" min="0" max="5" value="0" oninput="calculate()"></td>
+                            <td id="yuedu_text4_score" class="col-score">0</td>
+                            <td class="accuracy col-rate" id="yuedu_text4_accuracy">0%</td>
                         </tr>
                         <tr class="subtotal-row">
-                            <td class="type-name">阅读A 小计</td>
-                            <td>20</td>
-                            <td>40</td>
-                            <td id="yuedu_total_correct">0</td>
-                            <td id="yuedu_total_score">0</td>
-                            <td class="accuracy" id="yuedu_total_accuracy">0%</td>
+                            <td class="type-name col-type">阅读A 小计</td>
+                            <td class="col-num">20</td>
+                            <td class="col-score">40</td>
+                            <td id="yuedu_total_correct" class="col-correct">0</td>
+                            <td id="yuedu_total_score" class="col-score">0</td>
+                            <td class="accuracy col-rate" id="yuedu_total_accuracy">0%</td>
                         </tr>
                     </tbody>
                 </table>
@@ -636,38 +703,38 @@
                 <table>
                     <thead>
                         <tr>
-                            <th style="text-align: left;">题型</th>
-                            <th>题目数</th>
-                            <th>满分</th>
-                            <th>正确数</th>
-                            <th>得分</th>
-                            <th>正确率</th>
+                            <th class="col-type">题型</th>
+                            <th class="col-num">题数</th>
+                            <th class="col-score">满分</th>
+                            <th class="col-correct">正确数</th>
+                            <th class="col-score">得分</th>
+                            <th class="col-rate">正确率</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td class="type-name">新题型（阅读B）</td>
-                            <td>5</td>
-                            <td>10</td>
-                            <td><input type="number" class="score-input" id="xinti_correct" min="0" max="5" value="0" oninput="calculate()"></td>
-                            <td id="xinti_score">0</td>
-                            <td class="accuracy" id="xinti_accuracy">0%</td>
+                            <td class="type-name col-type">新题型</td>
+                            <td class="col-num">5</td>
+                            <td class="col-score">10</td>
+                            <td class="col-correct"><input type="number" class="score-input" id="xinti_correct" min="0" max="5" value="0" oninput="calculate()"></td>
+                            <td id="xinti_score" class="col-score">0</td>
+                            <td class="accuracy col-rate" id="xinti_accuracy">0%</td>
                         </tr>
                         <tr>
-                            <td class="type-name">翻译</td>
-                            <td>5</td>
-                            <td>10</td>
-                            <td><input type="number" class="score-input" id="fanyi_correct" min="0" max="5" value="0" oninput="calculate()"></td>
-                            <td id="fanyi_score">0</td>
-                            <td class="accuracy" id="fanyi_accuracy">0%</td>
+                            <td class="type-name col-type">翻译</td>
+                            <td class="col-num">5</td>
+                            <td class="col-score">10</td>
+                            <td class="col-correct"><input type="number" class="score-input" id="fanyi_correct" min="0" max="5" value="0" oninput="calculate()"></td>
+                            <td id="fanyi_score" class="col-score">0</td>
+                            <td class="accuracy col-rate" id="fanyi_accuracy">0%</td>
                         </tr>
                         <tr>
-                            <td class="type-name">作文（直接填分）</td>
-                            <td>-</td>
-                            <td>30</td>
-                            <td>-</td>
-                            <td><input type="number" class="score-input" id="zuowen_score" min="0" max="30" value="0" oninput="calculate()"></td>
-                            <td class="accuracy" id="zuowen_accuracy">0%</td>
+                            <td class="type-name col-type">作文（填分）</td>
+                            <td class="col-num">-</td>
+                            <td class="col-score">30</td>
+                            <td class="col-correct">-</td>
+                            <td class="col-score"><input type="number" class="score-input" id="zuowen_score" min="0" max="30" value="0" oninput="calculate()"></td>
+                            <td class="accuracy col-rate" id="zuowen_accuracy">0%</td>
                         </tr>
                         <tr class="total-row">
                             <td colspan="3">全卷总计</td>
