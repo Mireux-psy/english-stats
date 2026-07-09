@@ -1,0 +1,31 @@
+{
+    "name": "考研英语一真题正确率统计",
+    "short_name": "英语一统计",
+    "description": "2002-2026年考研英语一真题正确率统计与趋势分析",
+    "start_url": "./index.html",
+    "scope": "./",
+    "display": "standalone",
+    "orientation": "any",
+    "background_color": "#f1f5f9",
+    "theme_color": "#2563eb",
+    "icons": [
+        {
+            "src": "icon-512.jpg",
+            "sizes": "192x192",
+            "type": "image/jpeg",
+            "purpose": "any"
+        },
+        {
+            "src": "icon-512.jpg",
+            "sizes": "512x512",
+            "type": "image/jpeg",
+            "purpose": "any"
+        },
+        {
+            "src": "icon-512.jpg",
+            "sizes": "1024x1024",
+            "type": "image/jpeg",
+            "purpose": "any"
+        }
+    ]
+}
