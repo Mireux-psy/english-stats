@@ -168,7 +168,6 @@
             margin-bottom: 20px;
             font-size: 14px;
             line-height: 1.5;
-            table-layout: fixed;
         }
 
         th, td {
@@ -177,44 +176,45 @@
             text-align: center;
             font-size: 14px;
             line-height: 1.5;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
         }
 
         th {
             background: #2563eb;
             color: white;
             font-weight: 500;
-            font-size: 14px;
+            font-size: 13px;
             white-space: nowrap;
         }
 
         th.col-type,
         td.col-type {
             text-align: left;
-            white-space: normal;
-            width: 28%;
+            white-space: nowrap;
+            width: auto;
         }
 
         th.col-num,
         td.col-num {
-            width: 14%;
+            width: 60px;
+            white-space: nowrap;
         }
 
         th.col-correct,
         td.col-correct {
-            width: 16%;
+            width: 70px;
+            white-space: nowrap;
         }
 
         th.col-score,
         td.col-score {
-            width: 14%;
+            width: 50px;
+            white-space: nowrap;
         }
 
         th.col-rate,
         td.col-rate {
-            width: 14%;
+            width: 65px;
+            white-space: nowrap;
         }
 
         .reading-sub-row {
@@ -401,14 +401,22 @@
         }
 
         .history-table th {
-            font-size: 14px;
-            padding: 10px;
-            line-height: 1.5;
+            font-size: 13px;
+            padding: 10px 8px;
+            line-height: 1.4;
+            white-space: nowrap;
         }
 
         .history-table td {
-            padding: 10px;
-            line-height: 1.5;
+            padding: 10px 8px;
+            line-height: 1.4;
+            white-space: nowrap;
+        }
+
+        .history-table-wrapper {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            margin: 0 -4px;
         }
 
         .empty-state {
@@ -488,20 +496,23 @@
             }
 
             .col-type {
-                width: 30% !important;
+                width: auto !important;
             }
 
-            .col-num,
+            .col-num {
+                width: 40px !important;
+            }
+
             .col-score {
-                width: 12% !important;
+                width: 38px !important;
             }
 
             .col-correct {
-                width: 20% !important;
+                width: 56px !important;
             }
 
             .col-rate {
-                width: 14% !important;
+                width: 52px !important;
             }
 
             .score-input {
@@ -545,7 +556,7 @@
 
             .history-table th,
             .history-table td {
-                font-size: 13px;
+                font-size: 12px;
                 padding: 8px 6px;
             }
 
@@ -564,27 +575,32 @@
 
         @media (max-width: 420px) {
             .col-num {
-                display: none !important;
-            }
-
-            .col-type {
-                width: 34% !important;
+                width: 32px !important;
             }
 
             .col-score {
-                width: 14% !important;
+                width: 34px !important;
             }
 
             .col-correct {
-                width: 22% !important;
+                width: 48px !important;
             }
 
             .col-rate {
-                width: 16% !important;
+                width: 48px !important;
             }
 
             .score-input {
-                width: 40px;
+                width: 38px;
+            }
+
+            th, td {
+                padding: 7px 3px;
+                font-size: 12px;
+            }
+
+            .accuracy {
+                font-size: 12px;
             }
         }
     </style>
@@ -1195,7 +1211,7 @@
 
             document.getElementById('history-empty').style.display = 'none';
 
-            let html = '<table class="history-table"><thead><tr><th>年份</th><th>完形</th><th>阅读</th><th>新题型</th><th>翻译</th><th>作文</th><th>总分</th><th>操作</th></tr></thead><tbody>';
+            let html = '<div class="history-table-wrapper"><table class="history-table"><thead><tr><th>年份</th><th>完形</th><th>阅读</th><th>新题型</th><th>翻译</th><th>作文</th><th>总分</th><th>操作</th></tr></thead><tbody>';
 
             years.forEach(year => {
                 const data = history[year];
@@ -1211,7 +1227,7 @@
                 </tr>`;
             });
 
-            html += '</tbody></table>';
+            html += '</tbody></table></div>';
             document.getElementById('history-content').innerHTML = html;
         }
 
