@@ -857,10 +857,29 @@
             return 'accuracy-low';
         }
 
+        // 限制输入值在合法范围内
+        function clampInput(id, min, max) {
+            const el = document.getElementById(id);
+            let v = parseInt(el.value);
+            if (isNaN(v) || v < min) v = min;
+            if (v > max) v = max;
+            el.value = v;
+            return v;
+        }
+
         // 计算得分和正确率
         function calculate() {
+            // 强制校验所有输入上下限
+            const wanxingCorrect = clampInput('wanxing_correct', 0, 20);
+            const text1 = clampInput('yuedu_text1', 0, 5);
+            const text2 = clampInput('yuedu_text2', 0, 5);
+            const text3 = clampInput('yuedu_text3', 0, 5);
+            const text4 = clampInput('yuedu_text4', 0, 5);
+            const xintiCorrect = clampInput('xinti_correct', 0, 5);
+            const fanyiCorrect = clampInput('fanyi_correct', 0, 5);
+            const zuowenScore = clampInput('zuowen_score', 0, 30);
+
             // ========== 完形：20题，每题0.5分 ==========
-            const wanxingCorrect = parseInt(document.getElementById('wanxing_correct').value) || 0;
             const wanxingScore = wanxingCorrect * 0.5;
             const wanxingAccuracy = (wanxingCorrect / 20) * 100;
 
@@ -869,27 +888,18 @@
             document.getElementById('wanxing_accuracy').className = 'accuracy ' + getAccuracyClass(wanxingAccuracy);
 
             // ========== 阅读A：Text1-4，每篇5题，每题2分 ==========
-            const text1 = parseInt(document.getElementById('yuedu_text1').value) || 0;
-            const text2 = parseInt(document.getElementById('yuedu_text2').value) || 0;
-            const text3 = parseInt(document.getElementById('yuedu_text3').value) || 0;
-            const text4 = parseInt(document.getElementById('yuedu_text4').value) || 0;
-
-            // Text 1
             document.getElementById('yuedu_text1_score').textContent = (text1 * 2);
             document.getElementById('yuedu_text1_accuracy').textContent = ((text1 / 5) * 100).toFixed(1) + '%';
             document.getElementById('yuedu_text1_accuracy').className = 'accuracy ' + getAccuracyClass((text1 / 5) * 100);
 
-            // Text 2
             document.getElementById('yuedu_text2_score').textContent = (text2 * 2);
             document.getElementById('yuedu_text2_accuracy').textContent = ((text2 / 5) * 100).toFixed(1) + '%';
             document.getElementById('yuedu_text2_accuracy').className = 'accuracy ' + getAccuracyClass((text2 / 5) * 100);
 
-            // Text 3
             document.getElementById('yuedu_text3_score').textContent = (text3 * 2);
             document.getElementById('yuedu_text3_accuracy').textContent = ((text3 / 5) * 100).toFixed(1) + '%';
             document.getElementById('yuedu_text3_accuracy').className = 'accuracy ' + getAccuracyClass((text3 / 5) * 100);
 
-            // Text 4
             document.getElementById('yuedu_text4_score').textContent = (text4 * 2);
             document.getElementById('yuedu_text4_accuracy').textContent = ((text4 / 5) * 100).toFixed(1) + '%';
             document.getElementById('yuedu_text4_accuracy').className = 'accuracy ' + getAccuracyClass((text4 / 5) * 100);
@@ -905,7 +915,6 @@
             document.getElementById('yuedu_total_accuracy').className = 'accuracy ' + getAccuracyClass(yueduAccuracy);
 
             // ========== 新题型：5题，每题2分 ==========
-            const xintiCorrect = parseInt(document.getElementById('xinti_correct').value) || 0;
             const xintiScore = xintiCorrect * 2;
             const xintiAccuracy = (xintiCorrect / 5) * 100;
 
@@ -914,7 +923,6 @@
             document.getElementById('xinti_accuracy').className = 'accuracy ' + getAccuracyClass(xintiAccuracy);
 
             // ========== 翻译：5题，每题2分 ==========
-            const fanyiCorrect = parseInt(document.getElementById('fanyi_correct').value) || 0;
             const fanyiScore = fanyiCorrect * 2;
             const fanyiAccuracy = (fanyiCorrect / 5) * 100;
 
@@ -923,7 +931,6 @@
             document.getElementById('fanyi_accuracy').className = 'accuracy ' + getAccuracyClass(fanyiAccuracy);
 
             // ========== 作文：直接填分，满分30 ==========
-            const zuowenScore = parseInt(document.getElementById('zuowen_score').value) || 0;
             const zuowenAccuracy = (zuowenScore / 30) * 100;
 
             document.getElementById('zuowen_accuracy').textContent = zuowenAccuracy.toFixed(1) + '%';
@@ -1211,8 +1218,18 @@
         // 注册 Service Worker (PWA 离线支持)
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', function() {
-                navigator.serviceWorker.register('sw.js').then(function() {
+                navigator.serviceWorker.register('sw.js').then(function(reg) {
                     console.log('Service Worker 注册成功');
+                    // 检查是否有新版本
+                    reg.addEventListener('updatefound', function() {
+                        const newWorker = reg.installing;
+                        newWorker.addEventListener('statechange', function() {
+                            if (newWorker.state === 'activated') {
+                                console.log('新版本已就绪，刷新页面...');
+                                window.location.reload();
+                            }
+                        });
+                    });
                 }).catch(function(err) {
                     console.log('Service Worker 注册失败:', err);
                 });
